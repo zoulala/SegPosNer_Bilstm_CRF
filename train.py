@@ -21,7 +21,7 @@ def main(_):
     # 数据处理
     converter = TextConverter(train_file, save_file, max_vocab=Config.vocab_max_size)
     print('vocab size:',converter.vocab_size)
-    Config.num_classes = converter.tag_size
+    Config.num_classes = converter.tag_size+1
 
     # 产生训练样本
     train_QA_arrs = converter.QAs_to_arr(sens_tags_train, Config.seq_length)
