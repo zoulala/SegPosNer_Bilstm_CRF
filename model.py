@@ -81,7 +81,7 @@ class Model(object):
         # bilstm layer
         with tf.variable_scope("bi_lstm"):
             # 定义ann网络
-            ann_output, ann_state = bilstm(self.config.hidden_dim, self.config.num_classes, self.embed_input, self.input_length)
+            ann_output, ann_state = bilstm(self.config.hidden_dim, self.config.num_layers, self.embed_input, self.input_length)
             self.ann_output = tf.concat(ann_output, -1)  # fw,bw 输出拼接
             # layers_state = []
             # for layer_id in range(self.config.num_layers):
