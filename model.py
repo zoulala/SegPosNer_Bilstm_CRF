@@ -126,8 +126,8 @@ class Model(object):
             self.optim = tf.train.AdamOptimizer(learning_rate=self.config.learning_rate).minimize(self.mean_loss, global_step=self.global_step)
 
         with tf.name_scope("score"):
-            self.y_pre = tf.argmax(self.logits, -1)
             self.y_cos = tf.nn.softmax(logits=self.logits, axis=-1)
+            self.y_pre = tf.argmax(self.y_cos, -1)
 
     def load(self, checkpoint):
         self.saver.restore(self.session, checkpoint)
@@ -141,7 +141,7 @@ class Model(object):
                         self.input_length: q_len,
                         self.targets: r,
                         self.keep_prob: self.config.train_keep_prob}
-                batch_loss, _ ,y_pre, y_cos = sess.run([self.mean_loss, self.optim, self.y_pre, self.y_cos], feed_dict=feed)
+                batch_loss, _ ,y_pre, y_cos,logits = sess.run([self.mean_loss, self.optim, self.y_pre, self.y_cos,self.logits], feed_dict=feed)
                 end = time.time()
 
                 # control the print lines
