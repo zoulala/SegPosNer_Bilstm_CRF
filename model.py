@@ -6,7 +6,7 @@ import os
 
 class Config(object):
     """RNN配置参数"""
-    file_name = 'seg'  #保存模型文件
+    file_name = 'seg2'  #保存模型文件
 
     use_embedding = True   # 是否用词向量，否则one_hot
     embedding_dim = 128      # 词向量维度
@@ -109,7 +109,9 @@ class Model(object):
         with tf.name_scope("loss"):
             if not self.config.use_crf:
                 losses = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits, labels=self.targets)
-                self.mean_loss = tf.reduce_mean(losses, name='cross_entropy_mean_loss')
+                # 计算平均损失时，需要将填充位置权重设置为0，以免无效位置预测干扰模型训练
+                label_mask = tf.sequence_mask(self.input_length, maxlen=self.config.seq_length, dtype=tf.float32)
+                self.mean_loss = tf.reduce_mean(losses * label_mask, name='cross_entropy_mean_loss')
             else:
                 # crf layer
                 log_likelihood, self.trans = tf.contrib.crf.crf_log_likelihood(
@@ -141,7 +143,7 @@ class Model(object):
                         self.input_length: q_len,
                         self.targets: r,
                         self.keep_prob: self.config.train_keep_prob}
-                batch_loss, _ ,y_pre, y_cos,logits = sess.run([self.mean_loss, self.optim, self.y_pre, self.y_cos,self.logits], feed_dict=feed)
+                batch_loss, _ ,y_pre, y_cos,logits= sess.run([self.mean_loss, self.optim, self.y_pre, self.y_cos,self.logits], feed_dict=feed)
                 end = time.time()
 
                 # control the print lines
@@ -162,9 +164,15 @@ class Model(object):
 
                         y_pre, y_cos,logits = sess.run([self.y_pre, self.y_cos,self.logits], feed_dict=feed)
                         # print(y_pre)
-                        y_pres = np.append(y_pres, y_pre)
-                        y_coss = np.append(y_coss, y_cos)
-                        y_s = np.append(y_s, r)
+                        # todo:需要对预测对pad部分进行去除，不能进入统计。因为mean_loss时没有对pad进行预测.(done)
+                        for i in range(q_len.shape[0]):
+                            y_pres = np.append(y_pres, y_pre[i][:q_len[i]])
+                            y_s = np.append(y_s, r[i][:q_len[i]])
+
+
+                        # y_pres = np.append(y_pres, y_pre)
+                        # y_coss = np.append(y_coss, y_cos)
+                        # y_s = np.append(y_s, r)
 
                     # 计算预测准确率
                     print('val len:',len(y_s))
