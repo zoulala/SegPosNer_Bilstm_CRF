@@ -8,7 +8,7 @@ class Config(object):
     """RNN配置参数"""
     file_name = 'seg'  #保存模型文件
 
-    use_embedding = False   # 是否用词向量，否则one_hot
+    use_embedding = True   # 是否用词向量，否则one_hot
     embedding_dim = 128      # 词向量维度
     seq_length = 50        # 序列长度
     num_classes = 5        # 类别数
