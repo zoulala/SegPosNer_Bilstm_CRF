@@ -161,7 +161,7 @@ class Model(object):
                                 self.keep_prob: 1}
 
                         y_pre, y_cos,logits = sess.run([self.y_pre, self.y_cos,self.logits], feed_dict=feed)
-                        print(y_pre)
+                        # print(y_pre)
                         y_pres = np.append(y_pres, y_pre)
                         y_coss = np.append(y_coss, y_cos)
                         y_s = np.append(y_s, r)
