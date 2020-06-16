@@ -13,11 +13,13 @@ def main(_):
     vocab_file = os.path.join(model_path, 'vocab_tuples.pkl')
 
     # 获取测试问题
-    sens_tags_test = get_sens_tags('data/test.txt')
+    # sens_tags_test = get_sens_tags('data/test.txt')
+    sens_tags_test = get_sens_tags('data/slotlabel3400')[:1000]
 
     # 数据处理
     converter = TextConverter(None, vocab_file, max_vocab=Config.vocab_max_size)
     print('vocab size:',converter.vocab_size)
+    Config.num_classes = converter.tag_size + 1
 
     # 产生测试样本
     test_QA_arrs = converter.QAs_to_arr(sens_tags_test, Config.seq_length)
