@@ -6,7 +6,7 @@ import os
 
 class Config(object):
     """RNN配置参数"""
-    file_name = 'seg2'  #保存模型文件
+    file_name = 'slots_bilstm_crf'  #保存模型文件
 
     use_embedding = True   # 是否用词向量，否则one_hot
     embedding_dim = 128      # 词向量维度
@@ -18,7 +18,7 @@ class Config(object):
     hidden_dim = 128        # 隐藏层神经元
     # rnn = 'gru'             # lstm 或 gru
 
-    use_crf = False
+    use_crf = True
     train_keep_prob = 0.8  # dropout保留比例
     learning_rate = 1e-3  # 学习率
 
@@ -123,8 +123,8 @@ class Model(object):
 
         with tf.name_scope("optimize"):
             # 优化器
-            reg = tf.nn.l2_loss(w_1) + tf.nn.l2_loss(w_2) + tf.nn.l2_loss(b_1) + tf.nn.l2_loss(b_2)
-            self.mean_loss += reg
+            # reg = tf.nn.l2_loss(w_1) + tf.nn.l2_loss(w_2) + tf.nn.l2_loss(b_1) + tf.nn.l2_loss(b_2)
+            # self.mean_loss += reg
             self.optim = tf.train.AdamOptimizer(learning_rate=self.config.learning_rate).minimize(self.mean_loss, global_step=self.global_step)
 
         with tf.name_scope("score"):
@@ -164,7 +164,7 @@ class Model(object):
 
                         y_pre, y_cos,logits = sess.run([self.y_pre, self.y_cos,self.logits], feed_dict=feed)
                         # print(y_pre)
-                        # todo:需要对预测对pad部分进行去除，不能进入统计。因为mean_loss时没有对pad进行预测.(done)
+                        # todo:需要对预测对pad部分进行去除，不能进入统计。因为mean_loss时没有对pad进行预测(done)
                         for i in range(q_len.shape[0]):
                             y_pres = np.append(y_pres, y_pre[i][:q_len[i]])
                             y_s = np.append(y_s, r[i][:q_len[i]])

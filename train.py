@@ -10,13 +10,19 @@ def main(_):
     if os.path.exists(model_path) is False:
         os.makedirs(model_path)
 
-    train_file = 'data/train.txt'
+    # train_file = 'data/train.txt'
+    train_file = 'data/train_20200610.data'
+    dev_file = 'data/slotlabel3400'
     save_file = os.path.join(model_path, 'vocab_tuples.pkl')
 
     # 获取样本数据
     sens_tags_train = get_sens_tags(train_file)
-    sens_tags_val = get_sens_tags('data/dev.txt')
+    sens_tags_val = get_sens_tags(dev_file)
 
+    # sens_tags = get_sens_tags(train_file)
+    #
+    # sens_tags_train = sens_tags[1000:]
+    # sens_tags_val = sens_tags[:1000]
 
     # 数据处理
     converter = TextConverter(train_file, save_file, max_vocab=Config.vocab_max_size)
