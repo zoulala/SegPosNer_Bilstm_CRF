@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pickle
 import random
-
+import sys
 
 def batch_generator(samples, batchsize):
     '''产生训练batch样本'''

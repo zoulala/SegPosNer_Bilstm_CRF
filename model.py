@@ -6,23 +6,23 @@ import os
 
 class Config(object):
     """RNN配置参数"""
-    file_name = 'slots_bilstm_crf'  #保存模型文件
+    file_name = 'slots_bilstm_crf_300'  #保存模型文件
 
     use_embedding = True   # 是否用词向量，否则one_hot
-    embedding_dim = 128      # 词向量维度
-    seq_length = 50        # 序列长度
+    embedding_dim = 300      # 词向量维度
+    seq_length = 100        # 序列长度
     num_classes = 5        # 类别数
     vocab_max_size = 50000       # 词汇表达小
 
     num_layers= 2           # 隐藏层层数
-    hidden_dim = 128        # 隐藏层神经元
+    hidden_dim = 300        # 隐藏层神经元
     # rnn = 'gru'             # lstm 或 gru
 
     use_crf = True
-    train_keep_prob = 0.8  # dropout保留比例
+    train_keep_prob = 0.5  # dropout保留比例
     learning_rate = 1e-3  # 学习率
 
-    batch_size = 30  # 每批训练大小
+    batch_size = 64  # 每批训练大小
     max_steps = 20000  # 总迭代batch数
 
     log_every_n = 20  # 每多少轮输出一次结果
@@ -185,6 +185,9 @@ class Model(object):
                         update = tf.assign(self.global_loss, acc_val)  # 更新最优值
                         sess.run(update)
                         self.saver.save(sess, os.path.join(model_path, 'model'), global_step=self.global_step)
+                        with open(os.path.join(model_path, 'acc.txt'),'a+') as f:
+                            f.write('acc: %.4f, step:%d \n' % (acc_val,self.global_step.eval()))
+
 
                 if self.global_step.eval() >= self.config.max_steps:
                     break

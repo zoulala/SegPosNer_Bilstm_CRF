@@ -14,7 +14,7 @@ def main(_):
 
     # 获取测试问题
     # sens_tags_test = get_sens_tags('data/test.txt')
-    sens_tags_test = get_sens_tags('data/slotlabel3400')[:1000]
+    sens_tags_test = get_sens_tags('data/train.0926.label')[:1000]
 
     # 数据处理
     converter = TextConverter(None, vocab_file, max_vocab=Config.vocab_max_size)
@@ -39,7 +39,7 @@ def main(_):
         tags = [converter.int_to_tag(id) for id in y_pre[:test_QA_arrs[i][2]]]
         print('\nword / tag / pre')
         for j in range(test_QA_arrs[i][2]):
-            print("{} / {} / {}".format(sens_tags_test[i][0][j],sens_tags_test[i][1][j],tags[j]))
+            print("{}\t{}\t{}".format(sens_tags_test[i][0][j],sens_tags_test[i][1][j],tags[j]))
 
 
 
