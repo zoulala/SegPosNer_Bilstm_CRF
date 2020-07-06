@@ -2,6 +2,7 @@
 
 '''
 import os
+import sys
 import tensorflow as tf
 from read_utils import TextConverter
 from model import Model,Config
@@ -13,8 +14,9 @@ def main(_):
     vocab_file = os.path.join(model_path, 'vocab_tuples.pkl')
 
     # 获取测试问题
+    testfile = sys.argv[1]
     # sens_tags_test = get_sens_tags('data/test.txt')
-    sens_tags_test = get_sens_tags('data/train.0926.label')[:1000]
+    sens_tags_test = get_sens_tags(testfile)
 
     # 数据处理
     converter = TextConverter(None, vocab_file, max_vocab=Config.vocab_max_size)
