@@ -1,4 +1,5 @@
 import os
+import sys
 import tensorflow as tf
 from read_utils import TextConverter
 from model import Model,Config
@@ -11,18 +12,21 @@ def main(_):
         os.makedirs(model_path)
 
     # train_file = 'data/train.txt'
-    train_file = 'data/train.0926.label'
+    # train_file = 'data/train.0926.label'
     # dev_file = 'data/slotlabel3400'
+    train_file = sys.argv[1]
+    dev_file = sys.argv[2]
+
     save_file = os.path.join(model_path, 'vocab_tuples.pkl')
 
     # 获取样本数据
-    # sens_tags_train = get_sens_tags(train_file)
-    # sens_tags_val = get_sens_tags(dev_file)
+    sens_tags_train = get_sens_tags(train_file)
+    sens_tags_val = get_sens_tags(dev_file)
 
-    sens_tags = get_sens_tags(train_file)
-
-    sens_tags_train = sens_tags[10000:]
-    sens_tags_val = sens_tags[:10000]
+    # sens_tags = get_sens_tags(train_file)
+    #
+    # sens_tags_train = sens_tags[10000:]
+    # sens_tags_val = sens_tags[:10000]
 
     # 数据处理
     converter = TextConverter(train_file, save_file, max_vocab=Config.vocab_max_size)
